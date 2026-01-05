@@ -26,8 +26,8 @@ import time
 import json
 from enum import Enum
 
-from zkp import ZKPVerifier, ZKProof
-from encryptor import EncryptedSegment
+from .zkp import ZKPVerifier, ZKProof
+from .encryptor import EncryptedSegment
 
 
 class VerificationStatus(Enum):

@@ -17,7 +17,7 @@ Security Properties:
 from dataclasses import dataclass
 from typing import List, Tuple, Dict
 from enum import Enum
-from pii_detector import ClassifiedSegment, PIILabel
+from .pii_detector import ClassifiedSegment, PIILabel
 
 
 class SanitizationAction(Enum):

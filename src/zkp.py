@@ -42,8 +42,8 @@ from base64 import b64encode, b64decode
 from ecdsa import SigningKey, VerifyingKey, SECP256k1
 from ecdsa.ellipticcurve import Point
 
-from pii_detector import PIILabel
-from encryptor import EncryptedSegment
+from .pii_detector import PIILabel
+from .encryptor import EncryptedSegment
 
 
 @dataclass
