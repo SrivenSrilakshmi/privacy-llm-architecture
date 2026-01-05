@@ -15,18 +15,19 @@ Validation:
 - ZKP verification successful
 - Encryption/decryption round-trip
 - Server-side rejection of invalid proofs
+Server-side rejection of invalid proofs
 """
 
 import time
 import json
 from typing import List, Tuple
 
-from pii_detector import PIIDetector
-from sanitizer import Sanitizer
-from encryptor import SelectiveEncryptor
-from zkp import ZKPProver, ZKPVerifier
-from client import PrivacyClient, SecurePromptPackage
-from server import ServerGateway, VerificationStatus
+# Import concrete implementations
+from src.sanitizer import Sanitizer
+from src.encryptor import SelectiveEncryptor
+from src.zkp import ZKPProver, ZKPVerifier
+from core.client import PrivacyClient, SecurePromptPackage
+from src.server import ServerGateway, VerificationStatus
 
 
 class IntegrationTest:

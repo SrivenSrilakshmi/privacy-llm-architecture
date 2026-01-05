@@ -2,22 +2,58 @@
 Interactive Demo - Privacy-Preserving LLM Architecture
 
 This script provides a visual demonstration of the complete system with:
-- Color-coded output (if supported)
-- Step-by-step pipeline visualization
-- Security validation
-- Performance metrics
-- Comparison tables
 """
-
 import sys
 import time
-from typing import Dict, List
+from pathlib import Path 
+from core.client import PrivacyClient
 
-# Add src to path
-sys.path.insert(0, 'src')
+# Compute project root (folder containing demo.py)
+project_root = Path(__file__).resolve().parent
 
-from client import PrivacyClient
-from server import ServerGateway, VerificationStatus
+# Add common module locations
+for rel in ("core", "src", "branches"):
+    sys.path.insert(0, str(project_root / rel))
+
+from enum import Enum
+
+
+class VerificationStatus(Enum):
+    """Verification status for ZKP validation."""
+    ACCEPTED = "ACCEPTED"
+    REJECTED = "REJECTED"
+
+
+class VerificationResult:
+    """Simple container for verification outcome."""
+    def __init__(self, status: VerificationStatus, reason: str = ""):
+        self.status = status
+        self.reason = reason
+
+
+class LLMRequest:
+    """Container for data sent to the LLM."""
+    def __init__(self, prompt: str, encrypted_tokens=None):
+        self.prompt = prompt
+        self.encrypted_tokens = encrypted_tokens or []
+
+
+class ServerGateway:
+    """Minimal in-process server gateway used by the demo."""
+    def process_request(self, package_json: str) -> VerificationResult:
+        # In a real implementation, this would verify the ZKP and sanitization rules.
+        return VerificationResult(VerificationStatus.ACCEPTED)
+
+    def prepare_llm_request(self, package_json: str) -> LLMRequest:
+        # In a real implementation, this would reconstruct the sanitized prompt for the LLM.
+        return LLMRequest(
+            prompt="(sanitized prompt placeholder used for demo)",
+            encrypted_tokens=["<encrypted-segment>"]
+        )
+
+    def forward_to_llm(self, llm_request: LLMRequest) -> str:
+        # In a real implementation, this would call the actual LLM backend.
+        return "Simulated LLM response based on sanitized prompt."
 
 
 class Colors:

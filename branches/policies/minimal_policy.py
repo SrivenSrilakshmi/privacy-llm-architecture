@@ -34,3 +34,5 @@ class MinimalPolicy(IProtectionPolicy):
             'strategy': 'mask_all',
             'rules': {cat.value: strat.value for cat, strat in self.rules.items()}
         }
+
+

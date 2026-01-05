@@ -4,6 +4,12 @@ Branch: Hybrid PII Detector
 Ensemble detector combining multiple strategies.
 Suitable for: production, high accuracy requirements
 """
+import sys
+from pathlib import Path
+
+# Add project root to Python path
+project_root = Path(__file__).parent
+sys.path.insert(0, str(project_root))
 
 from typing import List, Dict, Any
 from core.skeleton import IPIIDetector, DetectedEntity, PIICategory

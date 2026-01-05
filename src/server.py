@@ -335,7 +335,7 @@ class SecurePromptBuilder:
 
 # Example usage and testing
 if __name__ == "__main__":
-    from client import PrivacyClient
+    from core.client import PrivacyClient
     
     print(f"{'='*80}")
     print(f"Server-Side Gateway - End-to-End Demo")

@@ -76,9 +76,10 @@ class PIIDetector:
         PIILabel.EMAIL: r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b',
         PIILabel.PHONE: r'\b(?:\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})\b',
         PIILabel.SSN: r'\b(?!000|666|9\d{2})\d{3}-(?!00)\d{2}-(?!0000)\d{4}\b',
-        PIILabel.CREDIT_CARD: r'\b(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13})\b',
+        PIILabel.CREDIT_CARD: r'\b(?:4\d{3}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}|5[1-5]\d{2}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}|3[47]\d{1}[-\s]?\d{6}[-\s]?\d{5})\b',
         PIILabel.IP_ADDRESS: r'\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b',
         PIILabel.DATE: r'\b(?:\d{1,2}[-/]\d{1,2}[-/]\d{2,4}|\d{4}[-/]\d{1,2}[-/]\d{1,2})\b',
+        PIILabel.PERSON: r'\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,2})\b',
     }
     
     # Medical terminology patterns (simplified - use BioClinicalBERT in production)
@@ -168,20 +169,30 @@ class PIIDetector:
         """
         segments = []
         
-        # Simplified name detection (production: use NER model)
-        # Pattern: Capitalized words that might be names
-        name_pattern = r'\b([A-Z][a-z]+ [A-Z][a-z]+(?:\s[A-Z][a-z]+)?)\b'
+        # Enhanced name detection
+        # Pattern: Capitalized words that might be names (2-3 words)
+        name_pattern = r'\b([A-Z][a-z]+(?:\s+[A-Z]\.?)?\s+[A-Z][a-z]+)\b'
         for match in re.finditer(name_pattern, text):
-            # Context check: not after common titles that indicate non-person entities
-            context_before = text[max(0, match.start()-20):match.start()]
-            if not any(title in context_before.lower() for title in ['dr.', 'doctor', 'patient']):
-                segments.append(ClassifiedSegment(
-                    text=match.group(),
-                    label=PIILabel.PERSON,
-                    start_offset=match.start(),
-                    end_offset=match.end(),
-                    confidence=0.75  # Lower confidence without true NER
-                ))
+            matched_text = match.group()
+            
+            # Skip common non-person patterns
+            skip_patterns = ['Patient Care', 'Health Center', 'Type 2', 'Lab Results']
+            if any(skip in matched_text for skip in skip_patterns):
+                continue
+            
+            # Higher confidence if near person indicators
+            context = text[max(0, match.start()-30):min(len(text), match.end()+30)].lower()
+            person_indicators = ['patient', 'dr.', 'doctor', 'mr.', 'mrs.', 'ms.', 'name:', 'contact:']
+            
+            confidence = 0.85 if any(ind in context for ind in person_indicators) else 0.70
+            
+            segments.append(ClassifiedSegment(
+                text=matched_text,
+                label=PIILabel.PERSON,
+                start_offset=match.start(),
+                end_offset=match.end(),
+                confidence=confidence
+            ))
         
         return segments
     
