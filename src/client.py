@@ -28,10 +28,10 @@ from typing import List, Dict, Optional, Tuple
 import json
 import time
 
-from .pii_detector import PIIDetector, ClassifiedSegment
-from .sanitizer import Sanitizer, SanitizedSegment, SanitizationAction
-from .encryptor import SelectiveEncryptor, EncryptedSegment, KeyManager
-from .zkp import ZKPProver, ZKPVerifier, ZKProof
+from pii_detector import PIIDetector, ClassifiedSegment
+from sanitizer import Sanitizer, SanitizedSegment, SanitizationAction
+from encryptor import SelectiveEncryptor, EncryptedSegment, KeyManager
+from zkp import ZKPProver, ZKPVerifier, ZKProof
 
 
 @dataclass

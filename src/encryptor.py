@@ -34,8 +34,8 @@ from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
 
-from .sanitizer import SanitizedSegment, SanitizationAction
-from .pii_detector import PIILabel
+from sanitizer import SanitizedSegment, SanitizationAction
+from pii_detector import PIILabel
 
 
 @dataclass
